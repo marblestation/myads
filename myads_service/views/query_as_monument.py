@@ -27,9 +27,10 @@ def query2svg(queryid):
     '''Returns the SVG form of the query - for better performance, will need
     to be cached/exported
     '''
-    
+
     q = db.session.query(Query).filter_by(qid=queryid).first()
+    db.session.commit()
     if not q:
         return '<svg xmlns="http://www.w3.org/2000/svg"></svg>', 404, {'Content-Type': "image/svg+xml"}
-    
+
     return SVG_TMPL % {'key': 'ADS query', 'value': q.numfound}, 200, {'Content-Type': "image/svg+xml"}

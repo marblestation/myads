@@ -13,15 +13,16 @@ bp = Blueprint('bumblebee', __name__)
 @bp.route('/configuration/<key>', methods=['GET'])
 def configuration(key=None):
     '''Allows you to retrieve JSON data from MYADS_BUMBLEBEE_OPTIONS'''
-    
+
     opts = app.config.get('MYADS_BUMBLEBEE_OPTIONS') or {}
-    
+
     if not isinstance(opts, dict):
         return json.dumps({'msg': 'Server misconfiguration, MYADS_BUMBLEBEE_OPTIONS is of an invalid type'}), 500
-    
+
     if key:
         if key == 'link_servers':
             res = db.session.query(Library).all()
+            db.session.commit()
             link_servers = [{"name": l.libname, "link": l.libserver, "gif":l.iconurl} for l in res]
             link_servers = sorted(link_servers, key=itemgetter('name'))
             return json.dumps(link_servers), 200
